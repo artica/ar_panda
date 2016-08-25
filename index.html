@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR Panda</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="panda,artica">
+
+	<link rel="icon" type="image/png" href="images/favicon.png" />
+
+    <style>	
+* {
+	padding: 0px;
+	margin: 0px;
+}
+ 
+.imgContainer {
+	position: absolute;
+    display: table-cell;
+    width: 100%; 
+    height: 100%;
+    background: #eee;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.imgContainer img {
+    max-width: 100%;
+    max-height: 100%;
+}
+	</style>
+
+	<script>
+		Date.prototype.getWeek = function() {
+			var onejan = new Date(this.getFullYear(), 0, 1);
+			return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+		}
+		
+		window.onload = function() {
+			var dddd = new Date();
+			var yearNumber = dddd.getYear() - 100;
+			var weekNumber = dddd.getWeek();
+			var imageUrl = 'images/'+yearNumber+'_'+weekNumber+'.jpg';
+			
+			var dom = document.getElementById('myImage');
+			if (dom) {
+				dom.src = imageUrl;
+			}
+			
+			//TODO: load this weeks image
+			
+			//TODO: add back button to load previous week (if available)
+			
+		};
+	</script>
+
+</head>
+<body>
+<div class='imgContainer'>
+    <img id="myImage" src='images/main-logo.png' />
+</div>
+</body>
+</html>
+
