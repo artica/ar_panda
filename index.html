@@ -12,6 +12,13 @@
 * {
 	padding: 0px;
 	margin: 0px;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none;   /* Chrome/Safari/Opera */
+	-khtml-user-select: none;    /* Konqueror */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* Internet Explorer/Edge */
+	user-select: none;           /* Non-prefixed version, currently
+                                    not supported by any browser */
 }
  
 .imgContainer {
@@ -28,6 +35,35 @@
     max-width: 100%;
     max-height: 100%;
 }
+
+body {
+	width: 100%;
+}
+
+#back {
+	background-image: url('images/back.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	left: 0px;
+	width: 100px;
+	height: 100px;
+	margin: 1em;
+	z-index: 1;
+	position: fixed;
+}
+
+#fwd {
+	background-image: url('images/fwd.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	right: 0px;
+	width: 100px;
+	height: 100px;
+	margin: 1em;
+	z-index: 1;
+	position: fixed;
+}
+
 	</style>
 
 	<script>
@@ -36,20 +72,102 @@
 			return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
 		}
 		
-		window.onload = function() {
-			var dddd = new Date();
-			var yearNumber = dddd.getYear() - 100;
-			var weekNumber = dddd.getWeek();
-			var imageUrl = 'images/'+yearNumber+'_'+weekNumber+'.jpg';
-			
+		function loadCurrentImage() {
+			var imageUrl = 'images/'+currYear+'_'+currWeek+'.jpg';
 			var dom = document.getElementById('myImage');
 			if (dom) {
 				dom.src = imageUrl;
 			}
+		}
+		
+		function decreaseWeek() {
+			currWeek--;
+			if (currWeek < 0) {
+				currYear--;
+				currWeek = 52;
+			}
 			
-			//TODO: load this weeks image
+			addFwdButton();
+		}
+		
+		function addFwdButton() {
+			var fwd = document.getElementById('fwd');
+			if (!fwd) {
+				fwd = document.createElement('div');
+				fwd.setAttribute('id', 'fwd');
+				fwd.addEventListener("mousehover", function() {
+					//TODO: change button highlight
+				});
+				fwd.addEventListener("mousedown", function() {
+					increaseWeek();
+					loadCurrentImage();
+				});
+				fwd.addEventListener('touchstart', function(e){
+					e.preventDefault();
+					//TODO: change button highlight
+				});
+				fwd.addEventListener('touchend', function(e){
+					e.preventDefault();
+					increaseWeek();
+					loadCurrentImage();
+				});
+				document.body.appendChild(fwd);
+			}
+		}
+		
+		function increaseWeek() {
+			currWeek++;
+			if (currWeek > 52) {
+				currYear++;
+				currWeek = 0;
+			}
+			if ((currWeek == startWeek) && (currYear == startYear)) removeFwdButton();
+		}
+		
+		function removeFwdButton() {
+			var fwd = document.getElementById('fwd');
+			if (fwd) {
+				document.body.removeChild(fwd);
+			}
+		}
+		
+		var startYear = 0;
+		var startWeek = 0;
+		var currYear = 0;
+		var currWeek = 0;
+		window.onload = function() {
+			var dddd = new Date();
+			startYear = dddd.getYear() - 100;
+			startWeek = dddd.getWeek();
+			currYear = startYear;
+			currWeek = startWeek;
 			
-			//TODO: add back button to load previous week (if available)
+			loadCurrentImage();
+			
+			// add back button to load previous week
+			var back = document.getElementById('back');
+			if (!back) {
+				back = document.createElement('div');
+				back.setAttribute('id', 'back');
+				//back.setAttribute('class', 'hidden');
+				back.addEventListener("mousehover", function() {
+					//TODO: change button highlight
+				});
+				back.addEventListener("mousedown", function() {
+					decreaseWeek();
+					loadCurrentImage();
+				});
+				back.addEventListener('touchstart', function(e){
+					e.preventDefault();
+					//TODO: change button highlight
+				});
+				back.addEventListener('touchend', function(e){
+					e.preventDefault();
+					decreaseWeek();
+					loadCurrentImage();
+				});
+				document.body.appendChild(back);
+			}
 			
 		};
 	</script>
